@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+#   chkconfig: 2345 56 10
+#   description: Startup/shutdown script for Fwix scripts
+#
+
+
+# Everything we run through here, we are going to run as the deploy user
+# so make it happen
+if [ $(whoami) = "root" ]; then
+  exec su web -c "$0 $*"
+fi
+
+JAVA=/home/web/opt/java/bin/java
+JAVA_OPTS='-Xmx6114M -jar'
+BIN_OPTS='-p4730'
+BIN=/home/web/opt/bin/Java-gearman.jar
+LOGFILE=/home/web/log/java_gearman.log
+PIDFILE=/home/web/run/java_gearman.pid
+
+RUNCMD="$JAVA $JAVA_OPTS $BIN $BIN_OPTS"
+
+case "$1" in
+  start)
+    echo -n "starting ${BIN}. . . "
+    `echo $RUNCMD` >> $LOGFILE 2>&1 &
+    echo $! > $PIDFILE
+    if [ $? == 0 ]; then
+      echo "[SUCCESS]"
+    else
+      echo "[FAILURE]"
+      rm $PIDFILE
+    fi
+    ;;
+  stop)
+    echo -n "stopping ${BIN}. . . "
+    kill $(cat $PIDFILE)
+    if [ $? == 0 ]; then
+      echo "[SUCCESS]"
+    else
+      echo "[FAILURE]"
+      rm $PIDFILE
+    fi
+    ;;
+  restart)
+    $0 stop
+    sleep 2
+    $0 start
+    ;;
+  showconfig)
+    echo $RUNCMD
+    ;;
+  *)
+    echo "Usage: $0 [start|stop|restart|showconfig]"
+    ;;
+esac
+

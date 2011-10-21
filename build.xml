@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ======================================================================                                                         
+
+     Java Gearman Service
+         
+     Gearman provides a generic application framework to farm out work to other
+     machines or processes that are better suited to do the work. It allows you
+     to do work in parallel, to load balance processing, and to call functions
+     between languages. It can be used in a variety of applications, from
+     high-availability web sites to the transport of database replication events.
+     In other words, it is the nervous system for how distributed processing
+     communicates.
+                   
+     isaiah.v                                                                
+     ====================================================================== -->
+<project name="Java Gearman Service" default="build-all">
+    
+	<description>
+        Gearman provides a generic application framework to farm out work to
+    	other machines or processes that are better suited to do the work.
+    	It allows you to do work in parallel, to load balance processing, and
+    	to call functions between languages. It can be used in a variety of
+    	applications, from high-availability web sites to the transport of
+    	database replication events. In other words, it is the nervous system
+    	for how distributed processing communicates.
+    </description>
+	
+	<!-- project name -->
+	<property name="project" value="java-gearman-service" />
+	
+	<!-- current version number -->
+	<property name="version" value="0.4.1" />
+	
+	<!-- source directory -->
+	<property name="src" location="src" />
+	
+	<!-- build directory -->
+	<property name="build" location="bin" />
+	
+	<!-- Javadoc home directory -->
+	<property name="javadoc" location="javadoc" />
+
+    <!-- Builds the executable jar, creates javadocs, and zips source -->
+	<target name="build-all">
+    	<antcall target="jar" />
+	<antcall target="javadoc" />
+    </target>
+	
+	<!-- Builds the project's executable jar -->
+	<target name="jar" depends="build" description="Builds the project's executable jar">
+		<jar destfile="${basedir}/${project}-${version}.jar" >
+			<fileset dir="${build}" />
+			<fileset dir="${src}" />
+			<fileset file="License.txt" />
+			<manifest>
+				<attribute name="Main-Class" value="org.gearman.Main"/>
+			</manifest>
+		</jar>
+    </target>
+	
+	<!-- Creates the javadocs -->
+	<target name="javadoc">
+		<mkdir dir="${javadoc}"/>
+		<javadoc destdir="${javadoc}" sourcepath="${src}" packagenames="org.gearman/*" />
+	</target>
+
+	<target name="test">
+		<!-- TODO -->
+	</target>
+	
+	<!-- Compiles the project -->
+	<target name="build" description="Compiles the project">
+		<mkdir dir="${build}" />
+		<javac destdir="${build}" srcdir="${src}" />
+	</target>
+	
+	<!-- Cleans project folder -->
+	<target name="clean" description="Cleans project folder">
+		<delete dir="${build}" />
+		<delete dir="${javadoc}" />
+	</target>
+
+</project>
